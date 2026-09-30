@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wisp — a small social feed</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <!-- ============ AUTH SCREEN ============ -->
+  <main id="view-auth" class="auth-screen">
+    <div class="auth-stage">
+      <section class="auth-intro">
+        <div class="wordmark">Wisp<span class="wordmark-mark">.</span></div>
+        <p class="auth-kicker">LESS NOISE, BETTER SIGNAL</p>
+        <h1>Make room for<br><span>good thoughts.</span></h1>
+        <p class="auth-deck">Small thoughts. Familiar names. A little more room to breathe.</p>
+        <div class="auth-note"><span class="auth-note-mark" aria-hidden="true">+</span><span>MAKE YOURSELF AT HOME</span></div>
+      </section>
+
+      <div class="auth-card">
+
+      <div class="tabs">
+        <button class="tab-btn is-active" data-tab="login">Log in</button>
+        <button class="tab-btn" data-tab="register">Sign up</button>
+      </div>
+
+      <form id="form-login" class="auth-form">
+        <label>Email
+          <input type="email" name="email" required autocomplete="email">
+        </label>
+        <label>Password
+          <input type="password" name="password" required autocomplete="current-password">
+        </label>
+        <p class="form-error" data-error-for="login" hidden></p>
+        <button type="submit" class="btn btn-primary">Log in</button>
+      </form>
+
+      <form id="form-register" class="auth-form" hidden>
+        <label>Username
+          <input type="text" name="username" required pattern="[a-zA-Z0-9_]{3,20}" placeholder="letters, numbers, _">
+        </label>
+        <label>Display name
+          <input type="text" name="displayName" required maxlength="60">
+        </label>
+        <label>Email
+          <input type="email" name="email" required autocomplete="email">
+        </label>
+        <label>Password
+          <input type="password" name="password" required minlength="6" autocomplete="new-password">
+        </label>
+        <p class="form-error" data-error-for="register" hidden></p>
+        <button type="submit" class="btn btn-primary">Create account</button>
+      </form>
+
+      <p class="auth-hint">Demo accounts (after <code>npm run seed</code>): astra@example.com / password123</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ APP SHELL ============ -->
+  <div id="view-app" class="app-shell" hidden>
+
+    <aside class="sidebar">
+      <div class="wordmark wordmark-small">Wisp</div>
+      <nav class="nav">
+        <button class="nav-link is-active" data-route="feed"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span>Feed</button>
+        <button class="nav-link" data-route="following"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 5a3.5 3.5 0 0 1 0 6.8M18 14a6.2 6.2 0 0 1 3.5 5.5"/></svg></span>Following</button>
+        <button class="nav-link" data-nav-profile><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>My profile</button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="mini-avatar" id="me-avatar"></div>
+        <div class="mini-who">
+          <div id="me-name" class="mini-name"></div>
+          <button id="btn-logout" class="link-btn">Log out</button>
+        </div>
+      </div>
+    </aside>
+
+    <header class="topbar">
+      <div class="wordmark wordmark-small">Wisp</div>
+      <button id="btn-logout-mobile" class="link-btn">Log out</button>
+    </header>
+
+    <main class="content">
+
+      <!-- Feed -->
+      <section id="pane-feed" class="pane">
+        <form id="composer" class="composer">
+          <textarea name="content" maxlength="2000" placeholder="What's happening? Add a photo, or just say something." rows="3"></textarea>
+          <div id="composer-image-preview" class="composer-image-preview" hidden>
+            <img id="composer-image-preview-img" alt="Selected image preview">
+            <div class="image-preview-footer">
+              <span id="composer-image-name" class="image-preview-name"></span>
+              <button type="button" id="remove-composer-image" class="image-remove" aria-label="Remove selected image">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="composer-row">
+            <div class="composer-tools">
+              <label class="attach-btn" for="post-image">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-5-5L5 20"/></svg>
+                <span>Photo</span>
+              </label>
+              <input id="post-image" class="image-input" type="file" accept="image/jpeg,image/png,image/webp">
+              <span class="char-hint"><span id="composer-count">0</span>/2000</span>
+            </div>
+            <button type="submit" class="btn btn-primary">Post</button>
+          </div>
+        </form>
+        <h1 class="pane-heading" id="feed-heading">Feed</h1>
+        <div id="feed-list" class="post-list"></div>
+      </section>
+
+      <!-- Profile -->
+      <section id="pane-profile" class="pane" hidden>
+        <div class="profile-header">
+          <div class="avatar avatar-lg" id="profile-avatar"></div>
+          <div class="profile-header-text">
+            <h1 id="profile-display-name"></h1>
+            <div class="profile-username" id="profile-username"></div>
+            <p class="profile-bio" id="profile-bio"></p>
+            <div class="profile-counts">
+              <span><strong id="count-posts">0</strong> posts</span>
+              <button class="counts-link" data-open-list="followers"><strong id="count-followers">0</strong> followers</button>
+              <button class="counts-link" data-open-list="following"><strong id="count-following">0</strong> following</button>
+            </div>
+          </div>
+          <div class="profile-actions">
+            <button id="btn-follow" class="btn btn-primary" hidden>Follow</button>
+            <button id="btn-edit-profile" class="btn btn-ghost" hidden>Edit profile</button>
+          </div>
+        </div>
+
+        <form id="form-edit-profile" class="edit-profile-form" hidden>
+          <label>Display name
+            <input type="text" name="displayName" maxlength="60" required>
+          </label>
+          <label>Bio
+            <textarea name="bio" maxlength="280" rows="2"></textarea>
+          </label>
+          <label>Avatar color
+            <input type="color" name="avatarColor">
+          </label>
+          <div class="composer-row">
+            <button type="button" id="btn-cancel-edit" class="btn btn-ghost">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+
+        <div id="profile-post-list" class="post-list"></div>
+      </section>
+
+    </main>
+
+    <nav class="mobile-nav" aria-label="Primary navigation">
+      <button class="nav-link is-active" data-route="feed"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span><span>Feed</span></button>
+      <button class="nav-link" data-route="following"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 5a3.5 3.5 0 0 1 0 6.8M18 14a6.2 6.2 0 0 1 3.5 5.5"/></svg></span><span>Following</span></button>
+      <button class="nav-link" data-nav-profile><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span>My profile</span></button>
+    </nav>
+  </div>
+
+  <!-- Post detail modal -->
+  <div id="modal-post" class="modal-backdrop" hidden>
+    <div class="modal">
+      <button class="modal-close" id="modal-post-close" aria-label="Close">&times;</button>
+      <div id="modal-post-body"></div>
+    </div>
+  </div>
+
+  <!-- Followers/following modal -->
+  <div id="modal-list" class="modal-backdrop" hidden>
+    <div class="modal">
+      <button class="modal-close" id="modal-list-close" aria-label="Close">&times;</button>
+      <h2 id="modal-list-title"></h2>
+      <div id="modal-list-body" class="user-list"></div>
+    </div>
+  </div>
+
+<script src="/js/api.js"></script>
+<script src="/js/render.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>

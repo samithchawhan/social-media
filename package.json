@@ -1,0 +1,26 @@
+{
+  "name": "mini-social-app",
+  "version": "1.0.0",
+  "description": "A mini social media app with profiles, posts, comments, likes, and follows.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "npx --yes --package=node@22 -- node server.js",
+    "dev": "npx --yes --package=node@22 -- node --watch server.js",
+    "seed": "npx --yes --package=node@22 -- node db/seed.js",
+    "migrate:sqlite": "npx --yes --package=node@22 -- node db/migrate-sqlite-to-mongo.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^7.6.0",
+    "multer": "^2.4.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT"
+}
